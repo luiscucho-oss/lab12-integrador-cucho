@@ -48,6 +48,10 @@ dependencies {
     implementation(libs.androidx.compose.material.icons.core)
     debugImplementation(libs.androidx.compose.ui.tooling)
 
+    // Lifecycle (ViewModel + collectAsStateWithLifecycle)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+
     // Retrofit + serialización
     implementation(libs.retrofit)
     implementation(libs.retrofit.kotlinx.serialization)
