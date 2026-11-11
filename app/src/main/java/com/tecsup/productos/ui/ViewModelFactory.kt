@@ -8,6 +8,7 @@ import com.tecsup.productos.AppContainer
 import com.tecsup.productos.ui.detalle.DetalleViewModel
 import com.tecsup.productos.ui.favoritos.FavoritosViewModel
 import com.tecsup.productos.ui.lista.ListaViewModel
+import com.tecsup.productos.ui.login.LoginViewModel
 
 /** Crea cada ViewModel pasándole sus dependencias desde el AppContainer. */
 class ViewModelFactory(private val container: AppContainer) : ViewModelProvider.Factory {
@@ -15,6 +16,7 @@ class ViewModelFactory(private val container: AppContainer) : ViewModelProvider.
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
         val viewModel = when (modelClass) {
+            LoginViewModel::class.java -> LoginViewModel(container.authRepository)
             ListaViewModel::class.java -> ListaViewModel(container.itemRepository)
             DetalleViewModel::class.java -> DetalleViewModel(
                 container.itemRepository,
