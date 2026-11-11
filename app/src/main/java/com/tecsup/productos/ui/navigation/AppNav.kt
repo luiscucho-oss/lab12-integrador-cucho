@@ -8,6 +8,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -42,6 +43,7 @@ import androidx.navigation.navArgument
 import com.tecsup.productos.domain.model.Rol
 import com.tecsup.productos.domain.model.Sesion
 import com.tecsup.productos.ui.UiState
+import com.tecsup.productos.ui.admin.AdminScreen
 import com.tecsup.productos.ui.components.Cargando
 import com.tecsup.productos.ui.detalle.DetalleScreen
 import com.tecsup.productos.ui.favoritos.FavoritosScreen
@@ -53,6 +55,7 @@ object Rutas {
     const val LISTA = "lista"
     const val DETALLE = "detalle/{id}"
     const val FAVORITOS = "favoritos"
+    const val ADMIN = "admin"
     fun detalle(id: Int) = "detalle/$id"
 }
 
@@ -94,10 +97,13 @@ private fun ZonaPrincipal(
     val ruta = entrada?.destination?.route
     var confirmarSalida by rememberSaveable { mutableStateOf(false) }
 
-    val pestanas = listOf(
-        Pestana(Rutas.LISTA, "Catálogo", Icons.Default.Home),
-        Pestana(Rutas.FAVORITOS, "Favoritos", Icons.Default.Favorite)
-    )
+    // El rol (leído de Firestore) decide qué pestañas y rutas existen
+    val esAdmin = sesion.rol == Rol.ADMIN
+    val pestanas = buildList {
+        add(Pestana(Rutas.LISTA, "Catálogo", Icons.Default.Home))
+        add(Pestana(Rutas.FAVORITOS, "Favoritos", Icons.Default.Favorite))
+        if (esAdmin) add(Pestana(Rutas.ADMIN, "Admin", Icons.Default.Settings))
+    }
 
     Scaffold(
         topBar = {
@@ -164,6 +170,12 @@ private fun ZonaPrincipal(
                     onAbrirDetalle = { id -> nav.navigate(Rutas.detalle(id)) }
                 )
             }
+            // La ruta del panel solo existe para el administrador
+            if (esAdmin) {
+                composable(Rutas.ADMIN) {
+                    AdminScreen(viewModel = viewModel(factory = factory))
+                }
+            }
         }
     }
 
@@ -188,6 +200,7 @@ private fun ZonaPrincipal(
 private fun tituloDe(ruta: String?) = when (ruta) {
     Rutas.DETALLE -> "Detalle"
     Rutas.FAVORITOS -> "Favoritos"
+    Rutas.ADMIN -> "Administración"
     else -> "Productos"
 }
 
