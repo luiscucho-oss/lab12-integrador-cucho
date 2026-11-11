@@ -18,13 +18,19 @@ class ViewModelFactory(private val container: AppContainer) : ViewModelProvider.
     override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
         val viewModel = when (modelClass) {
             LoginViewModel::class.java -> LoginViewModel(container.authRepository)
-            ListaViewModel::class.java -> ListaViewModel(container.itemRepository)
+            ListaViewModel::class.java -> ListaViewModel(
+                container.itemRepository,
+                container.notificador
+            )
             DetalleViewModel::class.java -> DetalleViewModel(
                 container.itemRepository,
                 extras.createSavedStateHandle()
             )
             FavoritosViewModel::class.java -> FavoritosViewModel(container.itemRepository)
-            AdminViewModel::class.java -> AdminViewModel(container.itemRepository)
+            AdminViewModel::class.java -> AdminViewModel(
+                container.itemRepository,
+                container.notificador
+            )
             else -> throw IllegalArgumentException("ViewModel desconocido: ${modelClass.name}")
         }
         return viewModel as T

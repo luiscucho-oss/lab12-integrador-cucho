@@ -3,6 +3,7 @@ package com.tecsup.productos.ui.admin
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tecsup.productos.data.repository.ItemRepository
+import com.tecsup.productos.notification.Notificador
 import com.tecsup.productos.ui.UiState
 import com.tecsup.productos.ui.mensajeDeError
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +17,8 @@ data class ResumenAdmin(
 )
 
 class AdminViewModel(
-    private val repo: ItemRepository
+    private val repo: ItemRepository,
+    private val notificador: Notificador
 ) : ViewModel() {
 
     private val _estado = MutableStateFlow<UiState<ResumenAdmin>>(UiState.Cargando)
@@ -42,7 +44,10 @@ class AdminViewModel(
         viewModelScope.launch {
             _ocupado.value = true
             repo.refrescar()
-                .onSuccess { n -> _mensaje.value = "Se guardaron $n elementos" }
+                .onSuccess { n ->
+                    _mensaje.value = "Se guardaron $n elementos"
+                    notificador.mostrar("Datos actualizados", "Se guardaron $n elementos")
+                }
                 .onFailure { e -> _mensaje.value = "No se pudo sincronizar: ${mensajeDeError(e)}" }
             cargarTotales()
             _ocupado.value = false

@@ -8,6 +8,8 @@ import com.tecsup.productos.data.remote.ApiService
 import com.tecsup.productos.data.remote.RetrofitClient
 import com.tecsup.productos.data.repository.ItemRepository
 import com.tecsup.productos.data.repository.ItemRepositoryImpl
+import com.tecsup.productos.notification.Notificador
+import com.tecsup.productos.notification.NotificadorAndroid
 
 /** Crea la API, la base de datos y los repositorios una sola vez para toda la app. */
 class AppContainer(context: Context) {
@@ -23,6 +25,8 @@ class AppContainer(context: Context) {
     }
 
     val authRepository: AuthRepository by lazy { FirebaseAuthRepository() }
+
+    val notificador: Notificador by lazy { NotificadorAndroid(appContext) }
 
     companion object {
         /** Variante del tema: categoría de DummyJSON que se descarga. */
