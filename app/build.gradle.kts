@@ -77,4 +77,8 @@ dependencies {
 
     // Imágenes desde URL
     implementation(libs.coil.compose)
+
+    // Pruebas unitarias
+    testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
 }

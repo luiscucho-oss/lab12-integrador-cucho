@@ -129,6 +129,23 @@ service cloud.firestore {
 
 Las contraseñas no se suben al repositorio.
 
+## Pruebas unitarias (R12)
+
+En `app/src/test/`, con un repositorio y un notificador falsos (`fakes/`):
+
+- `ListaViewModelTest` (7 pruebas): éxito con notificación, sin internet sin datos (error), sin internet con datos (aviso), lista vacía, error HTTP 500, reintentar después de un error y favorito conservado al sincronizar.
+- `LoginViewModelTest` (4 pruebas): campos vacíos sin llamar a Firebase, credenciales incorrectas, login correcto con rol y sesión guardada con cierre de sesión.
+
+```bash
+./gradlew testDebugUnitTest
+```
+
+## Fase 2 (rama `mejora-ia`)
+
+- Pruebas unitarias del `ListaViewModel` y del `LoginViewModel`.
+- Imágenes visibles sin conexión: el CDN responde `Cache-Control: no-store`, así que Coil se configura para guardarlas igual en la caché de disco (`ProductosApp.newImageLoader`).
+- Registro de consultas en [`PROMPTS.md`](PROMPTS.md).
+
 ## Pruebas de aceptación
 
 - [ ] PA-01 Ingresar con `usuario`: entra al catálogo y no ve el panel Admin.
