@@ -5,13 +5,12 @@ import androidx.lifecycle.viewModelScope
 import com.tecsup.productos.data.repository.ItemRepository
 import com.tecsup.productos.domain.model.Item
 import com.tecsup.productos.ui.UiState
+import com.tecsup.productos.ui.mensajeDeError
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import retrofit2.HttpException
-import java.io.IOException
 
 class ListaViewModel(
     private val repo: ItemRepository
@@ -43,14 +42,8 @@ class ListaViewModel(
                     if (_estado.value is UiState.Cargando) _estado.value = UiState.Exito(emptyList())
                 }
                 .onFailure { e ->
-                    _estado.value = UiState.Error(mensajeDe(e))
+                    _estado.value = UiState.Error(mensajeDeError(e))
                 }
         }
-    }
-
-    private fun mensajeDe(e: Throwable) = when (e) {
-        is IOException -> "No hay conexión a internet"
-        is HttpException -> "El servidor respondió con error ${e.code()}"
-        else -> "Ocurrió un error inesperado"
     }
 }
