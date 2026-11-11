@@ -6,6 +6,7 @@ import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.tecsup.productos.AppContainer
 import com.tecsup.productos.ui.detalle.DetalleViewModel
+import com.tecsup.productos.ui.favoritos.FavoritosViewModel
 import com.tecsup.productos.ui.lista.ListaViewModel
 
 /** Crea cada ViewModel pasándole sus dependencias desde el AppContainer. */
@@ -19,6 +20,7 @@ class ViewModelFactory(private val container: AppContainer) : ViewModelProvider.
                 container.itemRepository,
                 extras.createSavedStateHandle()
             )
+            FavoritosViewModel::class.java -> FavoritosViewModel(container.itemRepository)
             else -> throw IllegalArgumentException("ViewModel desconocido: ${modelClass.name}")
         }
         return viewModel as T

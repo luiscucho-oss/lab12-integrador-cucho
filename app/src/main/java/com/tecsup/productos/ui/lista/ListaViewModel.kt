@@ -46,4 +46,8 @@ class ListaViewModel(
                 }
         }
     }
+
+    fun alternarFavorito(id: Int) {
+        viewModelScope.launch { repo.alternarFavorito(id) }
+    }
 }

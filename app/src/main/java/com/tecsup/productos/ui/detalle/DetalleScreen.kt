@@ -10,14 +10,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.AssistChip
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -44,13 +48,18 @@ fun DetalleScreen(
     when (val e = estado) {
         UiState.Cargando -> Cargando(modifier)
         is UiState.Error -> ErrorView(e.mensaje, onReintentar = viewModel::cargar, modifier = modifier)
-        is UiState.Exito -> DetalleContenido(item = e.datos, modifier = modifier)
+        is UiState.Exito -> DetalleContenido(
+            item = e.datos,
+            onFavorito = viewModel::alternarFavorito,
+            modifier = modifier
+        )
     }
 }
 
 @Composable
 private fun DetalleContenido(
     item: Item,
+    onFavorito: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -107,6 +116,16 @@ private fun DetalleContenido(
                 item.categoria?.let { categoria ->
                     AssistChip(onClick = {}, label = { Text(categoria) })
                 }
+            }
+
+            Spacer(Modifier.height(8.dp))
+            FilledTonalButton(onClick = onFavorito, modifier = Modifier.fillMaxWidth()) {
+                Icon(
+                    imageVector = if (item.esFavorito) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                    contentDescription = null
+                )
+                Spacer(Modifier.width(8.dp))
+                Text(if (item.esFavorito) "Quitar de favoritos" else "Agregar a favoritos")
             }
 
             if (!item.descripcion.isNullOrBlank()) {

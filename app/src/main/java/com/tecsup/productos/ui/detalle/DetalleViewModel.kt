@@ -36,4 +36,12 @@ class DetalleViewModel(
             )
         }
     }
+
+    fun alternarFavorito() {
+        val actual = (_estado.value as? UiState.Exito)?.datos ?: return
+        viewModelScope.launch {
+            repo.alternarFavorito(id)
+            _estado.value = UiState.Exito(actual.copy(esFavorito = !actual.esFavorito))
+        }
+    }
 }
