@@ -1,0 +1,14 @@
+# Gradle y Android Studio
+.gradle/
+.kotlin/
+build/
+.idea/
+*.iml
+local.properties
+.externalNativeBuild/
+.cxx/
+captures/
+.DS_Store
+
+# Firebase: contiene la clave de API del proyecto, no se sube
+google-services.json
