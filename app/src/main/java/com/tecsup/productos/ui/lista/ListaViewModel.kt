@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 class ListaViewModel(
     private val repo: ItemRepository
@@ -19,10 +20,15 @@ class ListaViewModel(
     private val _estado = MutableStateFlow<UiState<List<Item>>>(UiState.Cargando)
     val estado: StateFlow<UiState<List<Item>>> = _estado.asStateFlow()
 
+    // Aviso que se muestra encima de la lista cuando no se pudo actualizar
+    private val _aviso = MutableStateFlow<String?>(null)
+    val aviso: StateFlow<String?> = _aviso.asStateFlow()
+
     private var refrescoTerminado = false
     private var trabajoRefresco: Job? = null
 
     init {
+        // La lista siempre sale de Room
         viewModelScope.launch {
             repo.items.collect { lista ->
                 if (lista.isNotEmpty() || refrescoTerminado) _estado.value = UiState.Exito(lista)
@@ -40,9 +46,20 @@ class ListaViewModel(
             resultado
                 .onSuccess {
                     if (_estado.value is UiState.Cargando) _estado.value = UiState.Exito(emptyList())
+                    _aviso.value = null
                 }
                 .onFailure { e ->
-                    _estado.value = UiState.Error(mensajeDeError(e))
+                    if (repo.cantidadGuardada() == 0) {
+                        // Sin internet y sin nada guardado: pantalla de error con Reintentar
+                        _estado.value = UiState.Error(mensajeDeError(e))
+                    } else {
+                        // Sin internet pero con datos guardados: se muestran con un aviso
+                        _aviso.value = if (e is IOException) {
+                            "Sin conexión: mostrando datos guardados"
+                        } else {
+                            "No se pudo actualizar: mostrando datos guardados"
+                        }
+                    }
                 }
         }
     }
