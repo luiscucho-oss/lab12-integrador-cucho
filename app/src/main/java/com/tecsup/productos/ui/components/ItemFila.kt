@@ -20,8 +20,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.tecsup.productos.domain.model.Item
 
 @Composable
@@ -66,14 +68,23 @@ fun ItemFila(
 
 @Composable
 fun ImagenItem(url: String?, modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier.background(MaterialTheme.colorScheme.primaryContainer),
-        contentAlignment = Alignment.Center
-    ) {
-        Icon(
-            imageVector = Icons.Default.ShoppingCart,
+    if (url.isNullOrBlank()) {
+        Box(
+            modifier = modifier.background(MaterialTheme.colorScheme.primaryContainer),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Default.ShoppingCart,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+        }
+    } else {
+        AsyncImage(
+            model = url,
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.onPrimaryContainer
+            contentScale = ContentScale.Crop,
+            modifier = modifier.background(MaterialTheme.colorScheme.surfaceVariant)
         )
     }
 }
