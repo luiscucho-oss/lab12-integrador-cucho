@@ -41,6 +41,8 @@ android {
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
+    // Play Services trae Fragment 1.1.0; el permiso con registerForActivityResult necesita 1.3.0+
+    implementation(libs.androidx.fragment)
 
     // Compose + Material 3
     implementation(platform(libs.androidx.compose.bom))
